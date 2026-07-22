@@ -14,6 +14,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { ModeToggle } from "@/components/mode-toggle";
+import Image from "next/image";
 
 export default function Header() {
   const router = useRouter();
@@ -41,13 +42,13 @@ export default function Header() {
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60">
-      <div className="container flex h-16 items-center justify-between px-4">
+      <div className="container mx-auto flex h-16 items-center justify-between px-4">
         {/* Logo */}
         <button
           onClick={() => handleNavigation("/")}
           className="flex items-center gap-2 font-semibold text-xl hover:opacity-80 transition-opacity"
         >
-          <ShoppingBag className="h-6 w-6" />
+          <Image src="/asstes/logo.png" alt="Logo" width={30} height={30} />
           <span>NexGear</span>
         </button>
 
@@ -65,7 +66,7 @@ export default function Header() {
         {/* Desktop Auth Buttons & Theme */}
         <div className="hidden md:flex items-center gap-3">
           <ModeToggle />
-          
+
           {user ? (
             <>
               <div className="text-sm text-muted-foreground ml-2">{user.email}</div>
@@ -100,11 +101,11 @@ export default function Header() {
               </Button>
             </SheetTrigger>
           </div>
-          
+
           <SheetContent side="right" className="w-75">
             <SheetHeader>
               <SheetTitle className="flex items-center gap-2">
-                <ShoppingBag className="h-5 w-5" />
+                <Image src="/asstes/logo.png" alt="Logo" width={30} height={30} />
                 NexGear
               </SheetTitle>
             </SheetHeader>
