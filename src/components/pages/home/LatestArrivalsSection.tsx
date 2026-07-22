@@ -33,8 +33,7 @@ export const LatestArrivalsSection = () => {
 
   return (
     <section className="container py-24 mx-auto relative overflow-hidden">
-      {/* Background decoration */}
-      <div className="absolute top-0 right-0 -mr-20 -mt-20 w-[500px] h-[500px] bg-emerald-500/5 blur-[100px] rounded-full pointer-events-none" />
+      {/* Background decoration removed */}
 
       <div className="mb-12 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between relative z-10">
         <div>
@@ -58,7 +57,7 @@ export const LatestArrivalsSection = () => {
         </Button>
       </div>
 
-      <motion.div 
+      <motion.div
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
         viewport={{ once: true, margin: "-100px" }}
@@ -68,16 +67,16 @@ export const LatestArrivalsSection = () => {
         {loading
           ? Array.from({ length: 8 }).map((_, i) => <ProductCardSkeleton key={i} />)
           : products.map((product, idx) => (
-              <motion.div
-                key={product.id}
-                initial={{ opacity: 0, scale: 0.95, y: 20 }}
-                whileInView={{ opacity: 1, scale: 1, y: 0 }}
-                viewport={{ once: true, margin: "-50px" }}
-                transition={{ duration: 0.4, delay: idx * 0.05 }}
-              >
-                <ProductCard product={product} />
-              </motion.div>
-            ))}
+            <motion.div
+              key={product.id}
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              whileInView={{ opacity: 1, scale: 1, y: 0 }}
+              viewport={{ once: true, margin: "-50px" }}
+              transition={{ duration: 0.4, delay: idx * 0.05 }}
+            >
+              <ProductCard product={product} />
+            </motion.div>
+          ))}
       </motion.div>
     </section>
   );
