@@ -56,6 +56,8 @@ export default function Footer() {
               <FooterLink href="/" label="Home" />
               <FooterLink href="/products" label="Products" />
               <FooterLink href="/about" label="About" />
+              <FooterLink href="/support" label="Support" />
+              <FooterLink href="/contact" label="Contact" />
             </ul>
           </motion.div>
 

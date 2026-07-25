@@ -40,6 +40,8 @@ export default function Header() {
     { title: "Home", url: "/" },
     { title: "Explore", url: "/products" },
     { title: "About", url: "/about" },
+    { title: "Support", url: "/support" },
+    { title: "Contact", url: "/contact" },
     ...(isAdminUser ? [{ title: "Dashboard", url: "/products/manage" }] : []),
     ...(isAdminUser ? [{ title: "Add Item", url: "/products/create" }] : []),
   ];
