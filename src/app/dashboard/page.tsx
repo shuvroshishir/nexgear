@@ -51,10 +51,16 @@ export default async function DashboardPage() {
   const uniqueCategoriesCount = categoriesResult.length;
   const avgPrice = avgPriceResult.length > 0 ? avgPriceResult[0].avgPrice : 0;
 
-  // Chart Formatting
   const barChartData = productsByCategory.map(item => ({
     name: item._id,
     products: item.count
+  }));
+
+  const formattedRecentProducts = recentProducts.map(product => ({
+    ...product,
+    _id: product._id.toString(),
+    createdAt: product.createdAt?.toString(),
+    updatedAt: product.updatedAt?.toString(),
   }));
 
   const pieChartData = [
@@ -85,7 +91,7 @@ export default async function DashboardPage() {
           pieChartData={pieChartData} 
         />
 
-        <RecentProductsTable products={recentProducts} />
+        <RecentProductsTable products={formattedRecentProducts as unknown as TProduct[]} />
       </div>
     </div>
   );

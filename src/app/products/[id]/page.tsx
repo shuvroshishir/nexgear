@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { TProduct } from "@/types/product";
+import { toast } from "react-hot-toast";
 
 export default function ProductDetails({
   params,
@@ -16,6 +17,7 @@ export default function ProductDetails({
 
   const [product, setProduct] = useState<TProduct | null>(null);
   const [loading, setLoading] = useState(true);
+  const [isBuying, setIsBuying] = useState(false);
 
   useEffect(() => {
     async function fetchProduct() {
@@ -39,6 +41,25 @@ export default function ProductDetails({
       fetchProduct();
     }
   }, [id]);
+
+  const handleBuyNow = () => {
+    if (isBuying || !product || product.stock <= 0) return;
+    setIsBuying(true);
+    
+    // Simulate a brief loading period before showing the toast
+    setTimeout(() => {
+      toast("Checkout functionality is coming soon.", {
+        icon: '🚀',
+        style: {
+          borderRadius: '10px',
+          background: 'var(--card)',
+          color: 'var(--foreground)',
+          border: '1px solid var(--border)',
+        },
+      });
+      setIsBuying(false);
+    }, 600);
+  };
 
   if (loading) {
     return <p>Loading product...</p>;
@@ -84,10 +105,24 @@ export default function ProductDetails({
             </span>
           </p>
 
-          <Button size="lg" className="w-full sm:w-auto mt-4" disabled={product.stock <= 0}>
-            <ShoppingCart className="mr-2 size-5" />
-            Add to Cart
-          </Button>
+          <div className="flex flex-col sm:flex-row gap-4 mt-4">
+            <Button size="lg" className="w-full sm:flex-1" disabled={product.stock <= 0}>
+              <ShoppingCart className="mr-2 size-5" />
+              Add to Cart
+            </Button>
+            <Button 
+              size="lg" 
+              variant="secondary"
+              className="w-full sm:flex-1 transition-all hover:scale-[1.02] active:scale-[0.98]" 
+              disabled={product.stock <= 0 || isBuying}
+              onClick={handleBuyNow}
+            >
+              {isBuying ? (
+                <div className="w-5 h-5 border-2 border-current border-t-transparent rounded-full animate-spin mr-2" />
+              ) : null}
+              Buy Now
+            </Button>
+          </div>
           
           <div className="mt-8 pt-8 border-t">
             <h3 className="font-semibold text-lg mb-4">Key Specifications</h3>

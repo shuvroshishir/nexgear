@@ -45,7 +45,7 @@ export const FeaturedProductsSection = () => {
           </p>
         </div>
 
-        <Button variant="outline" className="w-full sm:w-auto hover:bg-primary/10 hover:text-primary transition-colors border-primary/20" render={<Link href="/products" />}>
+        <Button variant="outline" className="w-full sm:w-auto hover:bg-primary/10 hover:text-primary transition-colors border-primary/20" render={<Link href="/products" />} nativeButton={false}>
           <span className="flex items-center">
             View All Collection
             <ArrowRight className="ml-2 h-4 w-4" />
