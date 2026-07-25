@@ -107,9 +107,16 @@ export default function Header() {
                   </DropdownMenuLabel>
                 </DropdownMenuGroup>
                 <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={() => handleNavigation("/profile")} className="cursor-pointer">
+                  Profile
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => handleNavigation("/settings")} className="cursor-pointer">
+                  Settings
+                </DropdownMenuItem>
                 
-                {isAdminUser ? (
+                {isAdminUser && (
                   <>
+                    <DropdownMenuSeparator />
                     <DropdownMenuItem onClick={() => handleNavigation("/dashboard")} className="cursor-pointer">
                       Dashboard
                     </DropdownMenuItem>
@@ -119,11 +126,6 @@ export default function Header() {
                     <DropdownMenuItem onClick={() => handleNavigation("/products/manage")} className="cursor-pointer">
                       Manage Products
                     </DropdownMenuItem>
-                  </>
-                ) : (
-                  <>
-                    <DropdownMenuItem disabled>Profile</DropdownMenuItem>
-                    <DropdownMenuItem disabled>Settings</DropdownMenuItem>
                   </>
                 )}
                 
@@ -198,6 +200,22 @@ export default function Header() {
                         <span className="text-sm font-medium leading-none truncate">{user?.name || "User"}</span>
                         <span className="text-xs text-muted-foreground truncate mt-1">{user?.email}</span>
                       </div>
+                    </div>
+                    <div className="flex flex-col gap-2 mt-2">
+                      <Button
+                        onClick={() => handleNavigation("/profile")}
+                        variant="ghost"
+                        className="w-full justify-start"
+                      >
+                        Profile
+                      </Button>
+                      <Button
+                        onClick={() => handleNavigation("/settings")}
+                        variant="ghost"
+                        className="w-full justify-start"
+                      >
+                        Settings
+                      </Button>
                     </div>
                     {isAdminUser && (
                       <div className="flex flex-col gap-2 mt-2">
