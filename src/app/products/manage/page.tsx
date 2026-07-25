@@ -21,6 +21,7 @@ import { authClient } from "@/lib/auth-client";
 import { useRouter } from "next/navigation";
 import { toast } from "react-hot-toast";
 import { ConfirmModal } from "@/components/shared/ConfirmModal";
+import { LoadingSpinner } from "@/components/shared/LoadingSpinner";
 
 export default function ManageProductsPage() {
   const router = useRouter();
@@ -119,7 +120,8 @@ export default function ManageProductsPage() {
 
         <CardContent>
           {loading ? (
-            <div className="flex h-40 items-center justify-center">
+            <div className="flex flex-col h-40 items-center justify-center">
+              <LoadingSpinner className="mb-4" />
               <p className="text-muted-foreground">Loading products...</p>
             </div>
           ) : products.length === 0 ? (
@@ -167,6 +169,11 @@ export default function ManageProductsPage() {
                         <Link href={`/products/${product.id}`}>
                           <Button variant="outline" size="icon" title="View details">
                             <Eye className="h-4 w-4" />
+                          </Button>
+                        </Link>
+                        <Link href={`/products/edit/${product.id}`}>
+                          <Button variant="outline" size="icon" title="Edit product">
+                            <Edit className="h-4 w-4" />
                           </Button>
                         </Link>
                         <Button 

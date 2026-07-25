@@ -278,11 +278,11 @@ export default function ContactPage() {
               <p className="text-sm text-muted-foreground mb-4">
                 Check out our comprehensive help center for answers to common questions about shipping, returns, and more.
               </p>
-              <Button asChild variant="outline" className="w-full bg-background">
-                <Link href="/support" className="flex items-center justify-center">
+              <Link href="/support" className="flex items-center justify-center w-full">
+                <Button variant="outline" className="w-full bg-background">
                   Visit Help Center <ArrowRight className="ml-2 size-4" />
-                </Link>
-              </Button>
+                </Button>
+              </Link>
             </Card>
           </motion.div>
         </motion.div>

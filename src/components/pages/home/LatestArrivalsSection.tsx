@@ -6,7 +6,7 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { TProduct } from "@/types/product";
 import { ProductCard } from "@/components/shared/ProductCard";
-import { ProductCardSkeleton } from "@/components/shared/ProductCardSkeleton";
+import { LoadingSpinner } from "@/components/shared/LoadingSpinner";
 import Link from "next/link";
 
 export const LatestArrivalsSection = () => {
@@ -64,9 +64,11 @@ export const LatestArrivalsSection = () => {
         transition={{ duration: 0.5 }}
         className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 relative z-10"
       >
-        {loading
-          ? Array.from({ length: 8 }).map((_, i) => <ProductCardSkeleton key={i} />)
-          : products.map((product, idx) => (
+        {loading ? (
+          <div className="col-span-full flex justify-center py-20">
+            <LoadingSpinner />
+          </div>
+        ) : products.map((product, idx) => (
             <motion.div
               key={product.id}
               initial={{ opacity: 0, scale: 0.95, y: 20 }}

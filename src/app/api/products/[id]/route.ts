@@ -23,6 +23,7 @@ export async function GET(
     const formattedProduct = {
       id: product._id.toString(),
       title: product.title,
+      shortDescription: product.shortDescription,
       description: product.description,
       image: product.image,
       category: product.category,
@@ -62,17 +63,47 @@ export async function PUT(
     }
 
     const { id } = await context.params;
-
     const body = await req.json();
 
+    // Validate every field
+    if (
+      !body.title || 
+      !body.shortDescription ||
+      !body.description ||
+      !body.category || 
+      typeof body.price !== 'number' || 
+      !body.image ||
+      typeof body.stock !== 'number'
+    ) {
+      return NextResponse.json(
+        {
+          error: "All required fields must be provided and have correct types.",
+        },
+        { status: 400 },
+      );
+    }
+
     const { db } = await mongoConnect();
+
+    const updateData = {
+      title: body.title,
+      shortDescription: body.shortDescription,
+      description: body.description,
+      category: body.category,
+      price: body.price,
+      image: body.image,
+      stock: body.stock,
+      rating: body.rating || 0,
+      featured: body.featured || false,
+      updatedAt: new Date().toISOString(),
+    };
 
     const result = await db.collection("products").updateOne(
       {
         _id: new ObjectId(id),
       },
       {
-        $set: body,
+        $set: updateData,
       },
     );
 

@@ -45,6 +45,7 @@ export async function GET(req: NextRequest) {
     const formattedProducts = products.map((product) => ({
       id: product._id.toString(),
       title: product.title,
+      shortDescription: product.shortDescription,
       description: product.description,
       category: product.category,
       image: product.image,

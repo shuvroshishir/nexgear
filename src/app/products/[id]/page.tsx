@@ -133,7 +133,7 @@ export default function ProductDetails({
       {/* Related Products Section */}
       <div className="border-t pt-16">
         <h2 className="text-2xl font-bold mb-8">Related Items</h2>
-        <RelatedProducts category={product.category} currentProductId={product.id!} />
+        <RelatedProducts category={product.category} currentProductId={product._id as string} />
       </div>
     </main>
   );

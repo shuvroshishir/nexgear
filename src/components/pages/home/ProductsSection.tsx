@@ -7,7 +7,7 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { TProduct } from "@/types/product";
 import { ProductCard } from "@/components/shared/ProductCard";
-import { ProductCardSkeleton } from "@/components/shared/ProductCardSkeleton";
+import { LoadingSpinner } from "@/components/shared/LoadingSpinner";
 
 export const FeaturedProductsSection = () => {
   const [products, setProducts] = useState<TProduct[]>([]);
@@ -60,11 +60,13 @@ export const FeaturedProductsSection = () => {
         transition={{ duration: 0.5 }}
         className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
       >
-        {loading
-          ? Array.from({ length: 8 }).map((_, i) => <ProductCardSkeleton key={i} />)
-          : products.map((product, idx) => (
+          {loading ? (
+            <div className="col-span-full flex justify-center py-20">
+              <LoadingSpinner />
+            </div>
+          ) : products.map((product, idx) => (
               <motion.div
-                key={product.id}
+                key={product._id || product.id}
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-50px" }}
@@ -72,7 +74,7 @@ export const FeaturedProductsSection = () => {
               >
                 <ProductCard product={product} />
               </motion.div>
-            ))}
+          ))}
       </motion.div>
     </section>
   );

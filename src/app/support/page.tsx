@@ -191,7 +191,7 @@ export default function SupportPage() {
             transition={{ duration: 0.6, delay: 0.1 }}
             className="bg-card border border-border rounded-2xl p-6 md:p-10 shadow-xl shadow-black/5"
           >
-            <Accordion type="single" collapsible className="w-full">
+            <Accordion className="w-full">
               {faqs.map((faq) => (
                 <AccordionItem key={faq.id} value={faq.id} className="py-2">
                   <AccordionTrigger className="text-left font-semibold text-[15px] hover:no-underline hover:text-primary">
@@ -227,11 +227,11 @@ export default function SupportPage() {
                 Can't find the answer you're looking for? Our dedicated support team is ready to assist you.
               </p>
               <div className="pt-4">
-                <Button asChild size="lg" className="h-14 px-8 rounded-xl text-base font-semibold shadow-[0_0_15px_rgba(20,184,166,0.3)] hover:shadow-[0_0_25px_rgba(20,184,166,0.5)] transition-all">
-                  <Link href="/contact">
+                <Link href="/contact">
+                  <Button size="lg" className="h-14 px-8 rounded-xl text-base font-semibold shadow-[0_0_15px_rgba(20,184,166,0.3)] hover:shadow-[0_0_25px_rgba(20,184,166,0.5)] transition-all">
                     Contact Support <ArrowRight className="ml-2 size-5" />
-                  </Link>
-                </Button>
+                  </Button>
+                </Link>
               </div>
             </div>
           </Card>

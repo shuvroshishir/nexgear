@@ -7,6 +7,7 @@ import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import { ShoppingCart, Star, Search, ChevronLeft, ChevronRight, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { LoadingSpinner } from "@/components/shared/LoadingSpinner";
 import { TProduct } from "@/types/product";
 
 function ProductsContent() {
@@ -179,9 +180,9 @@ function ProductsContent() {
       </div>
 
       {loading ? (
-        <div className="py-20 text-center text-muted-foreground">
-          <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"></div>
-          <p className="mt-4">Loading products...</p>
+        <div className="py-20 flex flex-col items-center justify-center text-muted-foreground">
+          <LoadingSpinner className="mb-4" />
+          <p>Loading products...</p>
         </div>
       ) : products.length === 0 ? (
         <div className="py-20 text-center border rounded-lg bg-muted/20">

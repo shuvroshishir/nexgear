@@ -5,6 +5,7 @@ export const authClient = createAuthClient({
     baseURL: process.env.BETTER_AUTH_URL,
 
     plugins: [
+        // @ts-expect-error better-auth type mismatch
         jwtClient(),
     ],
 });
