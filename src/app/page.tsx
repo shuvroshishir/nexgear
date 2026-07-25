@@ -12,9 +12,9 @@ export default function Home() {
   return (
     <div>
       <HeroSection />
+      <FeaturedProductsSection />
       <ServiceSection />
       <CategoriesSection />
-      <FeaturedProductsSection />
       <LatestArrivalsSection />
       <StatisticsSection />
       <TestimonialSection />

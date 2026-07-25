@@ -55,7 +55,7 @@ export const FAQSection = () => {
         transition={{ duration: 0.5 }}
         className="bg-card/50 border border-border/50 rounded-2xl p-6 md:p-8 backdrop-blur-sm"
       >
-        <Accordion type="single" collapsible className="w-full">
+        <Accordion className="w-full">
           {faqs.map((faq, index) => (
             <AccordionItem key={index} value={`item-${index}`} className="border-b-border/50 px-2">
               <AccordionTrigger className="text-left font-semibold text-foreground hover:text-primary transition-colors py-5 text-sm md:text-base hover:no-underline">

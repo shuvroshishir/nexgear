@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 import { Label } from "../ui/label";
 import { motion } from "framer-motion";
 import { ArrowRight, Mail, Lock, User } from "lucide-react";
+import { authClient } from "@/lib/auth-client";
 
 export function SignupForm() {
   const router = useRouter();
@@ -17,9 +18,15 @@ export function SignupForm() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const handleGoogleSignIn = () => {
-    // Placeholder for Google Sign In logic
-    console.log("Initiating Google Sign In...");
+  const handleGoogleSignIn = async () => {
+    try {
+      await authClient.signIn.social({ 
+        provider: "google",
+        callbackURL: "/",
+      });
+    } catch (err: any) {
+      setError(err.message || "An unexpected error occurred during Google sign in");
+    }
   };
 
   async function handleSubmit(data: React.FormEvent) {
@@ -28,22 +35,14 @@ export function SignupForm() {
     setError("");
 
     try {
-      const res = await fetch("/api/signup", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          username: name,
-          email,
-          password,
-        }),
+      const { error: resultError } = await authClient.signUp.email({
+        name,
+        email,
+        password,
       });
 
-      const result = await res.json();
-
-      if (!res.ok) {
-        throw new Error(result.error || "Signup failed");
+      if (resultError) {
+        throw new Error(resultError.message || "Signup failed");
       }
       
       router.push("/");

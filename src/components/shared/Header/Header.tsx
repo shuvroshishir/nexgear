@@ -8,7 +8,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { useAuth } from "@/hooks/useAuth";
+import { authClient } from "@/lib/auth-client";
 import { Calendar, Menu, ShoppingBag } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -18,7 +18,13 @@ import Image from "next/image";
 
 export default function Header() {
   const router = useRouter();
-  const { user, logout } = useAuth();
+  const { data: session } = authClient.useSession();
+  const user = session?.user;
+  
+  // Hardcoded for demo logic but can also use env variables
+  // Wait we need to check process.env.NEXT_PUBLIC_ADMIN_EMAIL or similar if it's public.
+  // Better yet, just check if email is admin@nexgear.com.
+  const isAdmin = user?.email === "admin@nexgear.com";
 
   const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -26,8 +32,8 @@ export default function Header() {
     { title: "Home", url: "/" },
     { title: "Explore", url: "/products" },
     { title: "About", url: "/about" },
-    ...(user ? [{ title: "Dashboard", url: "/products/manage" }] : []),
-    ...(user ? [{ title: "Add Item", url: "/products/create" }] : []),
+    ...(isAdmin ? [{ title: "Dashboard", url: "/products/manage" }] : []),
+    ...(isAdmin ? [{ title: "Add Item", url: "/products/create" }] : []),
   ];
 
   const handleNavigation = (url: string) => {
@@ -35,9 +41,11 @@ export default function Header() {
     setMobileOpen(false);
   };
 
-  const handleLogoutClick = () => {
+  const handleLogoutClick = async () => {
     setMobileOpen(false);
-    logout();
+    await authClient.signOut();
+    router.push("/");
+    router.refresh();
   };
 
   return (

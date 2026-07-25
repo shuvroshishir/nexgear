@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import AuthProvider from "@/providers/AuthProvider";
 import Header from "@/components/shared/Header/Header";
 import Footer from "@/components/shared/Footer/Footer";
 import { ThemeProvider } from "@/components/theme-provider";
@@ -39,13 +38,11 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <AuthProvider>
-            <Header />
-            <main className="min-h-screen bg-background text-foreground flex-1">
-              {children}
-            </main>
-            <Footer />
-          </AuthProvider>
+          <Header />
+          <main className="min-h-screen bg-background text-foreground flex-1">
+            {children}
+          </main>
+          <Footer />
         </ThemeProvider>
       </body>
     </html>

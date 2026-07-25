@@ -1,23 +1,21 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse, type NextRequest } from "next/server";
 
-export function proxy(req: NextRequest) {
-  const token = req.cookies.get("token")?.value;
+export default async function authMiddleware(request: NextRequest) {
+  const response = await fetch(`${request.nextUrl.origin}/api/auth/get-session`, {
+    headers: {
+      cookie: request.headers.get("cookie") || "",
+    },
+  });
 
-  const pathname = req.nextUrl.pathname;
+  const session = await response.json();
 
-  const protectedRoutes = ["/products/create", "/products/manage"];
-
-  const isProtected = protectedRoutes.some((route) =>
-    pathname.startsWith(route),
-  );
-
-  if (isProtected && !token) {
-    return NextResponse.redirect(new URL("/login", req.url));
+  if (!session || !session.session) {
+    return NextResponse.redirect(new URL("/login", request.url));
   }
 
   return NextResponse.next();
 }
 
 export const config = {
-  matcher: ["/products/:path*"],
+  matcher: ["/products/create", "/products/manage"],
 };

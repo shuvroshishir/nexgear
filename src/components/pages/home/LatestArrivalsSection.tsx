@@ -49,11 +49,11 @@ export const LatestArrivalsSection = () => {
           </p>
         </div>
 
-        <Button variant="outline" className="w-full sm:w-auto group border-border/50 hover:border-foreground/20" asChild>
-          <Link href="/products" className="flex items-center">
+        <Button variant="outline" className="w-full sm:w-auto group border-border/50 hover:border-foreground/20" render={<Link href="/products" />}>
+          <span className="flex items-center">
             Shop All New
             <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
-          </Link>
+          </span>
         </Button>
       </div>
 
