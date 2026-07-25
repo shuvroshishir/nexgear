@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { useRouter } from "next/navigation";
 import { Label } from "../ui/label";
 import { motion } from "framer-motion";
-import { ArrowRight, Mail, Lock, User } from "lucide-react";
+import { ArrowRight, Mail, Lock, User, Image as ImageIcon } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
 
 export function SignupForm() {
@@ -15,6 +15,7 @@ export function SignupForm() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [image, setImage] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -39,6 +40,7 @@ export function SignupForm() {
         name,
         email,
         password,
+        image: image || undefined,
       });
 
       if (resultError) {
@@ -106,6 +108,20 @@ export function SignupForm() {
               onChange={(e) => setEmail(e.target.value)}
               className="pl-10 bg-background/50 border-border text-foreground placeholder:text-muted-foreground/50 focus-visible:ring-primary focus-visible:border-primary h-12 rounded-xl transition-all"
               required
+            />
+          </div>
+        </div>
+
+        <div className="grid gap-2">
+          <Label className="text-muted-foreground ml-1">Profile Image URL (Optional)</Label>
+          <div className="relative">
+            <ImageIcon className="absolute left-3 top-1/2 -translate-y-1/2 size-5 text-muted-foreground/70" />
+            <Input
+              type="url"
+              value={image}
+              placeholder="https://example.com/avatar.jpg"
+              onChange={(e) => setImage(e.target.value)}
+              className="pl-10 bg-background/50 border-border text-foreground placeholder:text-muted-foreground/50 focus-visible:ring-primary focus-visible:border-primary h-12 rounded-xl transition-all"
             />
           </div>
         </div>

@@ -72,9 +72,21 @@ export async function GET(req: NextRequest) {
   }
 }
 
+import { auth } from "@/lib/auth";
+import { isAdmin } from "@/lib/admin";
+
 // POST new product
 export async function POST(req: NextRequest) {
   try {
+    const session = await auth.api.getSession({ headers: req.headers });
+    if (!session) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+    
+    if (!isAdmin(session.user.email)) {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    }
+
     const { db } = await mongoConnect();
 
     const data: TProduct = await req.json();

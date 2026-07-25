@@ -15,16 +15,24 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { ModeToggle } from "@/components/mode-toggle";
 import Image from "next/image";
+import { isAdmin } from "@/lib/admin";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuGroup,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 export default function Header() {
   const router = useRouter();
   const { data: session } = authClient.useSession();
   const user = session?.user;
   
-  // Hardcoded for demo logic but can also use env variables
-  // Wait we need to check process.env.NEXT_PUBLIC_ADMIN_EMAIL or similar if it's public.
-  // Better yet, just check if email is admin@nexgear.com.
-  const isAdmin = user?.email === "admin@nexgear.com";
+  const isAdminUser = isAdmin(user?.email);
 
   const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -32,8 +40,8 @@ export default function Header() {
     { title: "Home", url: "/" },
     { title: "Explore", url: "/products" },
     { title: "About", url: "/about" },
-    ...(isAdmin ? [{ title: "Dashboard", url: "/products/manage" }] : []),
-    ...(isAdmin ? [{ title: "Add Item", url: "/products/create" }] : []),
+    ...(isAdminUser ? [{ title: "Dashboard", url: "/products/manage" }] : []),
+    ...(isAdminUser ? [{ title: "Add Item", url: "/products/create" }] : []),
   ];
 
   const handleNavigation = (url: string) => {
@@ -76,12 +84,56 @@ export default function Header() {
           <ModeToggle />
 
           {user ? (
-            <>
-              <div className="text-sm text-muted-foreground ml-2">{user.email}</div>
-              <Button onClick={handleLogoutClick} size="sm">
-                Logout
-              </Button>
-            </>
+            <DropdownMenu>
+              <DropdownMenuTrigger render={
+                <button className="rounded-full focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 ml-2" />
+              }>
+                <Avatar className="h-9 w-9 border transition-opacity hover:opacity-80">
+                  <AvatarImage src={user?.image || undefined} alt={user?.name || "User"} />
+                  <AvatarFallback className="bg-primary/10 text-primary font-medium">
+                    {(user?.name || user?.email || "U").charAt(0).toUpperCase()}
+                  </AvatarFallback>
+                </Avatar>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-56 mt-1">
+                <DropdownMenuGroup>
+                  <DropdownMenuLabel className="font-normal">
+                    <div className="flex flex-col space-y-1">
+                      <p className="text-sm font-medium leading-none">{user?.name || "User"}</p>
+                      <p className="text-xs leading-none text-muted-foreground">{user?.email}</p>
+                    </div>
+                  </DropdownMenuLabel>
+                </DropdownMenuGroup>
+                <DropdownMenuSeparator />
+                
+                {isAdminUser ? (
+                  <>
+                    <DropdownMenuItem onClick={() => handleNavigation("/products/manage")} className="cursor-pointer">
+                      Dashboard
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => handleNavigation("/products/create")} className="cursor-pointer">
+                      Create Product
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => handleNavigation("/products/manage")} className="cursor-pointer">
+                      Manage Products
+                    </DropdownMenuItem>
+                  </>
+                ) : (
+                  <>
+                    <DropdownMenuItem disabled>Profile</DropdownMenuItem>
+                    <DropdownMenuItem disabled>Settings</DropdownMenuItem>
+                  </>
+                )}
+                
+                <DropdownMenuSeparator />
+                <DropdownMenuItem 
+                  onClick={handleLogoutClick}
+                  className="cursor-pointer text-destructive focus:bg-destructive focus:text-destructive-foreground"
+                >
+                  Logout
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           ) : (
             <>
               <Button
@@ -133,9 +185,16 @@ export default function Header() {
               <div className="flex flex-col gap-2 pt-4 border-t">
                 {user ? (
                   <>
-                    <div className="px-3 py-2 text-sm text-muted-foreground">
-                      <div className="font-medium text-foreground">
-                        {user.email}
+                    <div className="flex items-center gap-3 px-3 py-3">
+                      <Avatar className="h-10 w-10 border">
+                        <AvatarImage src={user?.image || undefined} alt={user?.name || "User"} />
+                        <AvatarFallback className="bg-primary/10 text-primary font-medium">
+                          {(user?.name || user?.email || "U").charAt(0).toUpperCase()}
+                        </AvatarFallback>
+                      </Avatar>
+                      <div className="flex flex-col overflow-hidden">
+                        <span className="text-sm font-medium leading-none truncate">{user?.name || "User"}</span>
+                        <span className="text-xs text-muted-foreground truncate mt-1">{user?.email}</span>
                       </div>
                     </div>
                     <Button

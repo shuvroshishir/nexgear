@@ -15,9 +15,22 @@ import {
 } from "@/components/ui/table";
 import { TProduct } from "@/types/product";
 
+import { AccessDenied } from "@/components/shared/AccessDenied";
+import { isAdmin } from "@/lib/admin";
+import { authClient } from "@/lib/auth-client";
+import { useRouter } from "next/navigation";
+
 export default function ManageProductsPage() {
+  const router = useRouter();
+  const { data: session, isPending } = authClient.useSession();
   const [products, setProducts] = useState<TProduct[]>([]);
   const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (!isPending && !session) {
+      router.push("/login");
+    }
+  }, [isPending, session, router]);
 
   const fetchProducts = async () => {
     setLoading(true);
@@ -56,6 +69,18 @@ export default function ManageProductsPage() {
       alert("An error occurred");
     }
   };
+
+  if (isPending) {
+    return <div className="min-h-[80vh] flex items-center justify-center">Loading...</div>;
+  }
+
+  if (!session) {
+    return null;
+  }
+
+  if (!isAdmin(session.user.email)) {
+    return <AccessDenied />;
+  }
 
   return (
     <div className="container py-10 mx-auto">

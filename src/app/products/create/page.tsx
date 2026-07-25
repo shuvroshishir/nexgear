@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -8,10 +8,33 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 
+import { AccessDenied } from "@/components/shared/AccessDenied";
+import { isAdmin } from "@/lib/admin";
+import { authClient } from "@/lib/auth-client";
+
 export default function AddProductPage() {
   const router = useRouter();
+  const { data: session, isPending } = authClient.useSession();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+
+  useEffect(() => {
+    if (!isPending && !session) {
+      router.push("/login");
+    }
+  }, [isPending, session, router]);
+
+  if (isPending) {
+    return <div className="min-h-[80vh] flex items-center justify-center">Loading...</div>;
+  }
+
+  if (!session) {
+    return null;
+  }
+
+  if (!isAdmin(session.user.email)) {
+    return <AccessDenied />;
+  }
 
   const [formData, setFormData] = useState({
     title: "",

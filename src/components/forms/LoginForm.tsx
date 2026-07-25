@@ -18,8 +18,8 @@ export function LoginForm() {
   const [error, setError] = useState("");
 
   const handleDemoLogin = () => {
-    setEmail("admin@nexgear.com");
-    setPassword("admin123");
+    setEmail(process.env.NEXT_PUBLIC_ADMIN_EMAIL || "admin@nexgear.com");
+    setPassword("NexGear@2026");
   };
 
   const handleGoogleSignIn = async () => {
