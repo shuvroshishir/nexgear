@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { Eye, Trash2, Edit } from "lucide-react";
+import { Eye, Trash2, Edit, Package } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import {
@@ -22,12 +22,16 @@ import { useRouter } from "next/navigation";
 import { toast } from "react-hot-toast";
 import { ConfirmModal } from "@/components/shared/ConfirmModal";
 import { LoadingSpinner } from "@/components/shared/LoadingSpinner";
+import { TableSkeleton } from "@/components/shared/skeletons/TableSkeleton";
+import { EmptyState } from "@/components/shared/EmptyState";
+import { ErrorState } from "@/components/shared/ErrorState";
 
 export default function ManageProductsPage() {
   const router = useRouter();
   const { data: session, isPending } = authClient.useSession();
   const [products, setProducts] = useState<TProduct[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
 
   useEffect(() => {
     if (!isPending && !session) {
@@ -37,14 +41,15 @@ export default function ManageProductsPage() {
 
   const fetchProducts = async () => {
     setLoading(true);
+    setError(false);
     try {
       const res = await fetch("/api/products?limit=100"); // Fetching enough for manage view without pagination for now
+      if (!res.ok) throw new Error("Failed to fetch");
       const json = await res.json();
-      if (res.ok) {
-        setProducts(json.data);
-      }
+      setProducts(json.data || []);
     } catch (error) {
       console.error(error);
+      setError(true);
     } finally {
       setLoading(false);
     }
@@ -89,7 +94,11 @@ export default function ManageProductsPage() {
   };
 
   if (isPending) {
-    return <div className="min-h-[80vh] flex items-center justify-center">Loading...</div>;
+    return (
+      <div className="container py-10 mx-auto">
+        <TableSkeleton />
+      </div>
+    );
   }
 
   if (!session) {
@@ -119,17 +128,24 @@ export default function ManageProductsPage() {
         </CardHeader>
 
         <CardContent>
-          {loading ? (
-            <div className="flex flex-col h-40 items-center justify-center">
-              <LoadingSpinner className="mb-4" />
-              <p className="text-muted-foreground">Loading products...</p>
+          {error ? (
+            <div className="py-10">
+              <ErrorState onRetry={fetchProducts} />
             </div>
+          ) : loading ? (
+            <TableSkeleton rows={5} columns={5} />
           ) : products.length === 0 ? (
-            <div className="flex flex-col items-center justify-center h-40 border border-dashed rounded-lg bg-muted/10">
-              <p className="text-muted-foreground mb-4">No products found.</p>
-              <Link href="/products/create">
-                <Button variant="outline">Create your first product</Button>
-              </Link>
+            <div className="py-10">
+              <EmptyState 
+                title="No Products Found"
+                description="You haven't added any products to your store yet."
+                icon={Package}
+                action={
+                  <Link href="/products/create">
+                    <Button>Create your first product</Button>
+                  </Link>
+                }
+              />
             </div>
           ) : (
             <Table>

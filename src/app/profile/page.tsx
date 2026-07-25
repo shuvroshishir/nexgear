@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
 import { isAdmin } from "@/lib/admin";
 import { LoadingSpinner } from "@/components/shared/LoadingSpinner";
+import { ProfileSkeleton } from "@/components/shared/skeletons/ProfileSkeleton";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -41,11 +42,7 @@ export default function ProfilePage() {
   }, [isAdminUser]);
 
   if (isPending || !session) {
-    return (
-      <div className="flex h-[60vh] items-center justify-center">
-        <LoadingSpinner />
-      </div>
-    );
+    return <ProfileSkeleton />;
   }
 
   const joinDate = user?.createdAt ? new Date(user.createdAt).toLocaleDateString(undefined, {

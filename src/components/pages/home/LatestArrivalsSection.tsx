@@ -6,35 +6,39 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { TProduct } from "@/types/product";
 import { ProductCard } from "@/components/shared/ProductCard";
-import { LoadingSpinner } from "@/components/shared/LoadingSpinner";
+import { ProductCardSkeleton } from "@/components/shared/ProductCardSkeleton";
+import { EmptyState } from "@/components/shared/EmptyState";
+import { ErrorState } from "@/components/shared/ErrorState";
 import Link from "next/link";
 
 export const LatestArrivalsSection = () => {
   const [products, setProducts] = useState<TProduct[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
+
+  const fetchLatestProducts = async () => {
+    setLoading(true);
+    setError(false);
+    try {
+      const res = await fetch("/api/products?limit=8");
+      if (!res.ok) throw new Error("Failed to fetch");
+      const json = await res.json();
+      const data = json.data || [];
+      setProducts(data.reverse());
+    } catch (error) {
+      console.error("Failed to fetch latest products:", error);
+      setError(true);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    async function fetchLatestProducts() {
-      try {
-        const res = await fetch("/api/products?limit=8");
-        const json = await res.json();
-        // Just as a mockup for "latest", we might reverse the array if the backend doesn't sort
-        const data = json.data || [];
-        setProducts(data.reverse());
-      } catch (error) {
-        console.error("Failed to fetch latest products:", error);
-      } finally {
-        setLoading(false);
-      }
-    }
-
     fetchLatestProducts();
   }, []);
 
   return (
     <section className="container py-24 mx-auto relative overflow-hidden">
-      {/* Background decoration removed */}
-
       <div className="mb-12 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between relative z-10">
         <div>
           <div className="flex items-center gap-2 rounded-full border border-orange-500/20 bg-orange-500/10 px-3 py-1 text-xs font-medium text-orange-500 w-fit mb-4">
@@ -57,20 +61,31 @@ export const LatestArrivalsSection = () => {
         </Button>
       </div>
 
-      <motion.div
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        viewport={{ once: true, margin: "-100px" }}
-        transition={{ duration: 0.5 }}
-        className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 relative z-10"
-      >
-        {loading ? (
-          <div className="col-span-full flex justify-center py-20">
-            <LoadingSpinner />
-          </div>
-        ) : products.map((product, idx) => (
+      {error ? (
+        <ErrorState onRetry={fetchLatestProducts} />
+      ) : loading ? (
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 relative z-10">
+          {Array.from({ length: 8 }).map((_, i) => (
+            <ProductCardSkeleton key={i} />
+          ))}
+        </div>
+      ) : products.length === 0 ? (
+        <EmptyState 
+          title="No Products Found" 
+          description="We couldn't find any latest products at this moment." 
+          icon={Flame}
+        />
+      ) : (
+        <motion.div
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true, margin: "-100px" }}
+          transition={{ duration: 0.5 }}
+          className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 relative z-10"
+        >
+          {products.map((product, idx) => (
             <motion.div
-              key={product.id}
+              key={product.id || product._id}
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
               whileInView={{ opacity: 1, scale: 1, y: 0 }}
               viewport={{ once: true, margin: "-50px" }}
@@ -79,7 +94,8 @@ export const LatestArrivalsSection = () => {
               <ProductCard product={product} />
             </motion.div>
           ))}
-      </motion.div>
+        </motion.div>
+      )}
     </section>
   );
 };

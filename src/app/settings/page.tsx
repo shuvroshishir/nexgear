@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
 import { useTheme } from "next-themes";
 import { LoadingSpinner } from "@/components/shared/LoadingSpinner";
+import { SettingsSkeleton } from "@/components/shared/skeletons/SettingsSkeleton";
 import { SettingsSection } from "@/components/pages/settings/SettingsSection";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -18,6 +19,7 @@ export default function SettingsPage() {
   const { theme, setTheme } = useTheme();
   
   const [name, setName] = useState("");
+  const [imageUrl, setImageUrl] = useState("");
   const [isSaving, setIsSaving] = useState(false);
   const [mounted, setMounted] = useState(false);
 
@@ -28,17 +30,14 @@ export default function SettingsPage() {
   useEffect(() => {
     if (!isPending && !session) {
       router.push("/login");
-    } else if (session?.user?.name) {
-      setName(session.user.name);
+    } else if (session?.user) {
+      setName(session.user.name || "");
+      setImageUrl(session.user.image || "");
     }
   }, [isPending, session, router]);
 
-  if (isPending || !session) {
-    return (
-      <div className="flex h-[60vh] items-center justify-center">
-        <LoadingSpinner />
-      </div>
-    );
+  if (isPending || !session || !mounted) {
+    return <SettingsSkeleton />;
   }
 
   const user = session.user;
@@ -50,7 +49,7 @@ export default function SettingsPage() {
       return;
     }
     
-    if (name === user.name) {
+    if (name === user.name && imageUrl === (user.image || "")) {
       toast("No changes to save", { icon: "ℹ️" });
       return;
     }
@@ -59,6 +58,7 @@ export default function SettingsPage() {
     try {
       const { error } = await authClient.updateUser({
         name: name.trim(),
+        image: imageUrl.trim(),
       });
 
       if (error) {
@@ -85,8 +85,7 @@ export default function SettingsPage() {
     }
   };
 
-  // Prevent hydration mismatch on themes
-  if (!mounted) return null;
+  // The mounted check is handled by the skeleton loading phase above
 
   return (
     <div className="container max-w-3xl py-10 mx-auto space-y-8">
@@ -114,6 +113,18 @@ export default function SettingsPage() {
               />
             </div>
             <div className="space-y-2">
+              <Label htmlFor="imageUrl">Profile Image URL</Label>
+              <Input
+                id="imageUrl"
+                value={imageUrl}
+                onChange={(e) => setImageUrl(e.target.value)}
+                placeholder="https://example.com/your-image.jpg"
+              />
+              <p className="text-xs text-muted-foreground">
+                Provide a direct URL to an image. Leave blank to use the default avatar.
+              </p>
+            </div>
+            <div className="space-y-2">
               <Label htmlFor="email">Email Address</Label>
               <Input
                 id="email"
@@ -126,7 +137,7 @@ export default function SettingsPage() {
                 Your email address is managed by your authentication provider and cannot be changed here.
               </p>
             </div>
-            <Button type="submit" disabled={isSaving || name === user.name}>
+            <Button type="submit" disabled={isSaving || (name === user.name && imageUrl === (user.image || ""))}>
               {isSaving ? (
                 <>
                   <LoadingSpinner className="mr-2 h-4 w-4" />

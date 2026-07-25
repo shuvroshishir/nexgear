@@ -7,25 +7,32 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { TProduct } from "@/types/product";
 import { ProductCard } from "@/components/shared/ProductCard";
-import { LoadingSpinner } from "@/components/shared/LoadingSpinner";
+import { ProductCardSkeleton } from "@/components/shared/ProductCardSkeleton";
+import { EmptyState } from "@/components/shared/EmptyState";
+import { ErrorState } from "@/components/shared/ErrorState";
 
 export const FeaturedProductsSection = () => {
   const [products, setProducts] = useState<TProduct[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
+
+  const fetchProducts = async () => {
+    setLoading(true);
+    setError(false);
+    try {
+      const res = await fetch("/api/products?limit=8");
+      if (!res.ok) throw new Error("Failed to fetch");
+      const json = await res.json();
+      setProducts(json.data || []);
+    } catch (error) {
+      console.error("Failed to fetch products:", error);
+      setError(true);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    async function fetchProducts() {
-      try {
-        const res = await fetch("/api/products?limit=8");
-        const json = await res.json();
-        setProducts(json.data || []);
-      } catch (error) {
-        console.error("Failed to fetch products:", error);
-      } finally {
-        setLoading(false);
-      }
-    }
-
     fetchProducts();
   }, []);
 
@@ -53,29 +60,41 @@ export const FeaturedProductsSection = () => {
         </Button>
       </div>
 
-      <motion.div 
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        viewport={{ once: true, margin: "-100px" }}
-        transition={{ duration: 0.5 }}
-        className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
-      >
-          {loading ? (
-            <div className="col-span-full flex justify-center py-20">
-              <LoadingSpinner />
-            </div>
-          ) : products.map((product, idx) => (
-              <motion.div
-                key={product._id || product.id}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-50px" }}
-                transition={{ duration: 0.5, delay: idx * 0.1 }}
-              >
-                <ProductCard product={product} />
-              </motion.div>
+      {error ? (
+        <ErrorState onRetry={fetchProducts} />
+      ) : loading ? (
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          {Array.from({ length: 8 }).map((_, i) => (
+            <ProductCardSkeleton key={i} />
           ))}
-      </motion.div>
+        </div>
+      ) : products.length === 0 ? (
+        <EmptyState 
+          title="No Products Found" 
+          description="We couldn't find any featured products at this moment." 
+          icon={Sparkles}
+        />
+      ) : (
+        <motion.div 
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true, margin: "-100px" }}
+          transition={{ duration: 0.5 }}
+          className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
+        >
+          {products.map((product, idx) => (
+            <motion.div
+              key={product._id || product.id}
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-50px" }}
+              transition={{ duration: 0.5, delay: idx * 0.1 }}
+            >
+              <ProductCard product={product} />
+            </motion.div>
+          ))}
+        </motion.div>
+      )}
     </section>
   );
 };

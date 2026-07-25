@@ -1,12 +1,16 @@
 "use client";
 
 import Image from "next/image";
-import { ShoppingCart, Star } from "lucide-react";
+import { ShoppingCart, Star, PackageX } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { TProduct } from "@/types/product";
 import { toast } from "react-hot-toast";
+import { DetailsSkeleton } from "@/components/shared/skeletons/DetailsSkeleton";
+import { EmptyState } from "@/components/shared/EmptyState";
+import { ErrorState } from "@/components/shared/ErrorState";
+import { ProductCardSkeleton } from "@/components/shared/ProductCardSkeleton";
 
 export default function ProductDetails({
   params,
@@ -17,26 +21,35 @@ export default function ProductDetails({
 
   const [product, setProduct] = useState<TProduct | null>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
   const [isBuying, setIsBuying] = useState(false);
+  const router = useRouter();
+
+  const fetchProduct = async () => {
+    setLoading(true);
+    setError(false);
+    try {
+      const res = await fetch(`/api/products/${id}`);
+
+      if (!res.ok) {
+        if (res.status === 404) {
+          setProduct(null);
+          return;
+        }
+        throw new Error("Failed to fetch product");
+      }
+
+      const data = await res.json();
+      setProduct(data);
+    } catch (error) {
+      console.error(error);
+      setError(true);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    async function fetchProduct() {
-      try {
-        const res = await fetch(`/api/products/${id}`);
-
-        if (!res.ok) {
-          throw new Error("Failed to fetch product");
-        }
-
-        const data = await res.json();
-        setProduct(data);
-      } catch (error) {
-        console.error(error);
-      } finally {
-        setLoading(false);
-      }
-    }
-
     if (id) {
       fetchProduct();
     }
@@ -62,11 +75,33 @@ export default function ProductDetails({
   };
 
   if (loading) {
-    return <p>Loading product...</p>;
+    return <DetailsSkeleton />;
+  }
+  
+  if (error) {
+    return <div className="container py-20"><ErrorState onRetry={fetchProduct} /></div>;
   }
 
   if (!product) {
-    return <p>Product not found.</p>;
+    return (
+      <div className="container py-20">
+        <EmptyState 
+          title="Product Not Found"
+          description="The product you are looking for doesn't exist or has been removed."
+          icon={PackageX}
+          action={
+            <div className="flex gap-4">
+              <Button onClick={() => router.push("/products")}>
+                Back to Products
+              </Button>
+              <Button variant="outline" onClick={() => router.push("/")}>
+                Go Home
+              </Button>
+            </div>
+          }
+        />
+      </div>
+    );
   }
 
   return (
@@ -201,7 +236,13 @@ function RelatedProducts({ category, currentProductId }: { category: string, cur
   }, [category, currentProductId]);
 
   if (loading) {
-    return <div className="h-64 flex items-center justify-center border rounded-xl bg-muted/20">Loading related items...</div>;
+    return (
+      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        {[1, 2, 3, 4].map((i) => (
+          <ProductCardSkeleton key={i} />
+        ))}
+      </div>
+    );
   }
 
   if (related.length === 0) {

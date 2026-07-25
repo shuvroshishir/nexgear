@@ -9,6 +9,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { LoadingSpinner } from "@/components/shared/LoadingSpinner";
 import { TProduct } from "@/types/product";
+import { ProductCard } from "@/components/shared/ProductCard";
+import { ProductCardSkeleton } from "@/components/shared/ProductCardSkeleton";
+import { EmptyState } from "@/components/shared/EmptyState";
+import { ErrorState } from "@/components/shared/ErrorState";
 
 function ProductsContent() {
   const router = useRouter();
@@ -18,6 +22,7 @@ function ProductsContent() {
   const [products, setProducts] = useState<TProduct[]>([]);
   const [categories, setCategories] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
   const [meta, setMeta] = useState({ total: 0, page: 1, limit: 12, totalPages: 1 });
 
   // Current filters from URL
@@ -61,6 +66,7 @@ function ProductsContent() {
   useEffect(() => {
     async function fetchProducts() {
       setLoading(true);
+      setError(false);
       try {
         const query = new URLSearchParams({
           page,
@@ -72,17 +78,16 @@ function ProductsContent() {
         });
         
         const res = await fetch(`/api/products?${query.toString()}`);
+        if (!res.ok) throw new Error("Failed to fetch");
+        
         const json = await res.json();
         
-        if (res.ok) {
-          setProducts(json.data);
-          setMeta(json.meta);
-        } else {
-          setProducts([]);
-        }
+        setProducts(json.data || []);
+        setMeta(json.meta || { total: 0, page: 1, limit: 12, totalPages: 1 });
       } catch (error) {
         console.error(error);
         setProducts([]);
+        setError(true);
       } finally {
         setLoading(false);
       }
@@ -179,65 +184,35 @@ function ProductsContent() {
         </div>
       </div>
 
-      {loading ? (
-        <div className="py-20 flex flex-col items-center justify-center text-muted-foreground">
-          <LoadingSpinner className="mb-4" />
-          <p>Loading products...</p>
+      {error ? (
+        <ErrorState onRetry={() => {
+          setError(false);
+          setLoading(true);
+          // fetchProducts is called via useEffect anyway when state updates, but we can trigger re-fetch by doing:
+          router.push(pathname); 
+        }} />
+      ) : loading ? (
+        <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          {Array.from({ length: 12 }).map((_, i) => (
+            <ProductCardSkeleton key={i} />
+          ))}
         </div>
       ) : products.length === 0 ? (
-        <div className="py-20 text-center border rounded-lg bg-muted/20">
-          <p className="text-muted-foreground text-lg">No products found matching your criteria.</p>
-          <Button variant="link" onClick={() => router.push(pathname)}>
-            Clear all filters
-          </Button>
-        </div>
+        <EmptyState 
+          title="No Products Found" 
+          description="We couldn't find any products matching your search criteria." 
+          icon={Search}
+          action={
+            <Button variant="outline" onClick={() => router.push(pathname)}>
+              Clear all filters
+            </Button>
+          }
+        />
       ) : (
         <>
           <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {products.map((product) => (
-              <div
-                key={product.id}
-                className="group flex flex-col overflow-hidden rounded-xl border bg-background transition-all hover:shadow-lg"
-              >
-                <div className="relative aspect-square overflow-hidden bg-muted/20">
-                  <Image
-                    src={product.image}
-                    alt={product.title}
-                    fill
-                    className="object-cover transition-transform duration-300 group-hover:scale-105"
-                  />
-                </div>
-
-                <div className="flex flex-1 flex-col space-y-3 p-5">
-                  <span className="text-sm font-medium text-muted-foreground uppercase tracking-wider">
-                    {product.category}
-                  </span>
-
-                  <h3 className="line-clamp-1 text-lg font-semibold" title={product.title}>
-                    {product.title}
-                  </h3>
-
-                  <p className="line-clamp-2 text-sm text-muted-foreground flex-1">
-                    {product.description}
-                  </p>
-
-                  <div className="flex items-center justify-between pt-2">
-                    <span className="text-xl font-bold">${product.price}</span>
-
-                    <div className="flex items-center gap-1">
-                      <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                      <span className="text-sm font-medium">{product.rating}</span>
-                    </div>
-                  </div>
-                  
-                  <Link href={`/products/${product.id}`} className="mt-4 block">
-                    <Button className="w-full">
-                      <ShoppingCart className="mr-2 h-4 w-4" />
-                      View Details
-                    </Button>
-                  </Link>
-                </div>
-              </div>
+              <ProductCard key={product.id || product._id} product={product} />
             ))}
           </div>
 
@@ -275,7 +250,21 @@ function ProductsContent() {
 
 export default function ProductsPage() {
   return (
-    <Suspense fallback={<div className="container py-20 text-center">Loading...</div>}>
+    <Suspense fallback={
+      <div className="container py-20 mx-auto">
+        <div className="mb-12 flex flex-col items-start justify-between gap-6 md:flex-row md:items-end">
+           <div>
+            <h2 className="text-3xl font-bold tracking-tight">All Products</h2>
+            <p className="mt-2 text-muted-foreground">Browse our entire collection.</p>
+           </div>
+        </div>
+        <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          {Array.from({ length: 12 }).map((_, i) => (
+            <ProductCardSkeleton key={i} />
+          ))}
+        </div>
+      </div>
+    }>
       <ProductsContent />
     </Suspense>
   );
