@@ -1,3 +1,5 @@
+<img width="1672" height="941" alt="ChatGPT Image Jul 26, 2026, 02_11_35 AM" src="https://github.com/user-attachments/assets/3598187c-1d9f-44a9-9337-7ea0ded68f58" />
+
 <h1 align="center">🛒 NexGear</h1>
 
 <p align="center">
