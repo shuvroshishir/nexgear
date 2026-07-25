@@ -103,11 +103,11 @@ export default function Header() {
         <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
           <div className="flex items-center gap-2 md:hidden">
             <ModeToggle />
-            <SheetTrigger asChild>
+            <SheetTrigger render={
               <Button variant="ghost" size="icon">
                 <Menu className="h-5 w-5" />
               </Button>
-            </SheetTrigger>
+            } />
           </div>
 
           <SheetContent side="right" className="w-75">
