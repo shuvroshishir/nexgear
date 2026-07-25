@@ -1,12 +1,11 @@
 import { Db, MongoClient } from "mongodb";
-import clientPromise from "./mongodb";
+import { client } from "./mongodb";
 
 export async function mongoConnect(): Promise<{
   client: MongoClient;
   db: Db;
 }> {
-  const client = await clientPromise;
-  // console.log(client);
-  const db = client.db("NextMart");
+  const dbName = process.env.MONGO_DB_NAME || "nexgear";
+  const db = client.db(dbName);
   return { client, db };
 }

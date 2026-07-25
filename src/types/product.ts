@@ -1,11 +1,15 @@
 export type TProduct = {
-  id?: string;
+  _id?: string;
   title: string;
+  shortDescription: string;
+  description: string;
   category: string;
   price: number;
-  rating: number;
-  stock: number;
-  featured: boolean;
   image: string;
-  description: string;
+  stock: number;
+  rating: number;
+  featured: boolean;
+  createdAt?: string | Date;
+  updatedAt?: string | Date;
+  createdBy?: string;
 };

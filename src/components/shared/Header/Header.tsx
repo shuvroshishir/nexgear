@@ -42,8 +42,6 @@ export default function Header() {
     { title: "About", url: "/about" },
     { title: "Support", url: "/support" },
     { title: "Contact", url: "/contact" },
-    ...(isAdminUser ? [{ title: "Dashboard", url: "/products/manage" }] : []),
-    ...(isAdminUser ? [{ title: "Add Item", url: "/products/create" }] : []),
   ];
 
   const handleNavigation = (url: string) => {

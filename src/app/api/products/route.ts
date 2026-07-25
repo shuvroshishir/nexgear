@@ -91,20 +91,40 @@ export async function POST(req: NextRequest) {
 
     const data: TProduct = await req.json();
 
-    // Basic validation
-    if (!data.title || !data.category || !data.price || !data.image) {
+    // Validate every field
+    if (
+      !data.title || 
+      !data.shortDescription ||
+      !data.description ||
+      !data.category || 
+      typeof data.price !== 'number' || 
+      !data.image ||
+      typeof data.stock !== 'number'
+    ) {
       return NextResponse.json(
         {
-          error: "Title, category, price, and image are required.",
+          error: "All required fields must be provided and have correct types.",
         },
         { status: 400 },
       );
     }
 
-    const result = await db.collection("products").insertOne({
-      ...data,
-      createdAt: new Date(),
-    });
+    const newProduct = {
+      title: data.title,
+      shortDescription: data.shortDescription,
+      description: data.description,
+      category: data.category,
+      price: data.price,
+      image: data.image,
+      stock: data.stock,
+      rating: data.rating || 0,
+      featured: data.featured || false,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+      createdBy: session.user.email
+    };
+
+    const result = await db.collection("products").insertOne(newProduct);
 
     return NextResponse.json(
       {
