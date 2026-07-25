@@ -9,7 +9,6 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "react-hot-toast";
 import { TProduct } from "@/types/product";
-import Link from "next/link";
 
 interface ProductFormProps {
   mode: "create" | "edit";
@@ -36,6 +35,7 @@ export function ProductForm({ mode, initialData, productId }: ProductFormProps) 
 
   useEffect(() => {
     if (mode === "edit" && initialData) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setFormData({
         title: initialData.title || "",
         shortDescription: initialData.shortDescription || "",
@@ -91,6 +91,7 @@ export function ProductForm({ mode, initialData, productId }: ProductFormProps) 
         setError(data.error || `Failed to ${mode} product`);
       }
     } catch (err) {
+      console.error(err);
       toast.error("An unexpected error occurred");
       setError("An unexpected error occurred");
     } finally {

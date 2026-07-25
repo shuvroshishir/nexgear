@@ -1,242 +1,282 @@
-# 🛍️ NextMart
+<h1 align="center">🛒 NexGear</h1>
 
-A modern, beginner-friendly e-commerce application built with **Next.js 15**, **TypeScript**, **MongoDB**, and **Next.js API Routes**. This project demonstrates how to build a full-stack application using the App Router, secure authentication, protected routes, and CRUD operations while following a clean and scalable architecture.
+<p align="center">
+A modern full-stack e-commerce platform built with <strong>Next.js 16</strong>, <strong>TypeScript</strong>, <strong>Better Auth</strong>, and <strong>MongoDB</strong>.
+</p>
 
----
+<p align="center">
 
-## 🚀 Features
+![Next.js](https://img.shields.io/badge/Next.js-16-black?logo=nextdotjs)
+![React](https://img.shields.io/badge/React-19-61DAFB?logo=react)
+![TypeScript](https://img.shields.io/badge/TypeScript-5-blue?logo=typescript)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-v4-38BDF8?logo=tailwindcss)
+![MongoDB](https://img.shields.io/badge/MongoDB-47A248?logo=mongodb)
+![Better Auth](https://img.shields.io/badge/Better_Auth-FF5A5F)
+![Vercel](https://img.shields.io/badge/Deploy-Vercel-black?logo=vercel)
 
-- ⚡ Next.js 15 App Router
-- 🔷 TypeScript
-- 🎨 Tailwind CSS
-- 🧩 shadcn/ui Components
-- 🗄️ MongoDB (Native Driver)
-- 🔌 Next.js API Routes
-- 🔐 JWT Authentication
-- 🍪 HTTP-only Cookie Authentication
-- 🛡️ Protected Routes using Middleware
-- 📦 Product CRUD API
-- 🛒 Product Listing
-- 📄 Product Details
-- ➕ Create Product (Protected)
-- ✏️ Manage Products (Protected)
-- 📱 Fully Responsive Design
-- 📂 Clean Folder Structure
+</p>
 
 ---
 
-## 🛠️ Tech Stack
+# 🚀 Live Demo
 
-### Frontend
+- 🌐 **Live Website:** https://your-live-link.vercel.app
+- 💻 **Client Repository:** https://github.com/yourusername/nexgear
 
-- Next.js 15
-- React
+---
+
+# 📖 About NexGear
+
+NexGear is a modern and fully responsive e-commerce web application where users can explore premium tech products with advanced filtering, search, sorting, and pagination.
+
+The application includes a secure authentication system powered by Better Auth, an admin dashboard for product management, interactive charts, and a clean user experience built using modern React and Next.js best practices.
+
+---
+
+# ✨ Key Features
+
+## 🔐 Authentication
+
+- Email & Password Authentication
+- Google Authentication
+- Better Auth Session Management
+- Protected Routes
+- Admin Authorization using Environment Variable
+- Secure HTTP-only Session Cookies
+
+---
+
+## 🛍 Product Management
+
+- Add Product
+- Update Product
+- Delete Product
+- Product Details
+- Manage Products Dashboard
+- Responsive Product Cards
+- Product Skeleton Loaders
+
+---
+
+## 🔎 Product Exploration
+
+- Search Products
+- Category Filtering
+- Price Sorting
+- Pagination
+- Related Products
+- Responsive Product Details Page
+
+---
+
+## 📊 Admin Dashboard
+
+- Dashboard Overview
+- Product Statistics
+- Category Statistics
+- Recharts Analytics
+- Recent Products
+- Protected Admin Routes
+
+---
+
+## 🎨 User Experience
+
+- Fully Responsive Design
+- Dark / Light Theme
+- Beautiful Toast Notifications
+- Confirmation Modal before Delete
+- Loading Skeletons
+- Empty States
+- Error Pages
+- 404 Page
+- Smooth Animations
+
+---
+
+# 🛠 Tech Stack
+
+## Frontend
+
+- Next.js 16 (App Router)
+- React 19
 - TypeScript
-- Tailwind CSS
-- shadcn/ui
-- Lucide React
+- Tailwind CSS v4
+- Shadcn UI
+- Framer Motion
+- Recharts
+- React Hot Toast
 
-### Backend
+## Backend
 
 - Next.js API Routes
+- Better Auth
 - MongoDB Native Driver
-- JWT
-- bcryptjs
 
 ---
 
-## 📁 Project Structure
+# 📂 Project Structure
 
 ```text
 src
 │
 ├── app
+│   ├── (auth)
 │   ├── api
-│   │   ├── login
-│   │   ├── logout
-│   │   ├── me
-│   │   └── products
-│   │       └── [id]
-│   │
+│   ├── dashboard
 │   ├── products
-│   │   ├── create
-│   │   ├── manage
-│   │   └── [id]
-│   │
-│   ├── login
-│   ├── signup
-│   └── about
+│   ├── profile
+│   ├── settings
+│   └── ...
 │
 ├── components
-│
-├── providers
-│   └── AuthProvider.tsx
+│   ├── ui
+│   ├── shared
+│   └── pages
 │
 ├── hooks
-│   └── useAuth.ts
-│
 ├── lib
-│   └── mongoConnect.ts
-│
+├── providers
 ├── types
-│
-└── middleware.ts
+└── utils
 ```
 
 ---
 
-## 🔐 Authentication
-
-Authentication is implemented using:
-
-- JWT
-- HTTP-only Cookies
-- bcrypt Password Hashing
-- Protected Routes with Next.js Middleware
-
-Authentication flow:
-
-```text
-User Login
-      │
-      ▼
-API Route (/api/login)
-      │
-      ▼
-Verify Credentials
-      │
-      ▼
-Generate JWT
-      │
-      ▼
-Store HTTP-only Cookie
-      │
-      ▼
-Protected Pages & APIs
-```
-
----
-
-## 📦 Product APIs
-
-| Method | Endpoint            | Description        |
-| ------ | ------------------- | ------------------ |
-| GET    | `/api/products`     | Get all products   |
-| GET    | `/api/products/:id` | Get single product |
-| POST   | `/api/products`     | Create product     |
-| PUT    | `/api/products/:id` | Update product     |
-| DELETE | `/api/products/:id` | Delete product     |
-
----
-
-## 🔒 Protected Routes
-
-The following routes require authentication:
-
-- `/products/create`
-- `/products/manage`
-
-Protection is handled using **Next.js Middleware**.
-
----
-
-## ⚙️ Environment Variables
-
-Create a `.env.local` file.
-
-```env
-MONGODB_URI=your_mongodb_connection_string
-DATABASE_NAME=nextmart
-JWT_SECRET=your_secret_key
-```
-
----
-
-## 📥 Installation
-
-Clone the repository.
+# ⚙️ Installation
 
 ```bash
-git clone <repository-url>
-```
+git clone https://github.com/yourusername/nexgear.git
 
-Navigate to the project.
+cd nexgear
 
-```bash
-cd nextmart
-```
-
-Install dependencies.
-
-```bash
 npm install
-```
 
-Run the development server.
-
-```bash
 npm run dev
 ```
 
-Open:
+---
 
-```
-http://localhost:3000
+# 🔑 Environment Variables
+
+Create a `.env.local` file and configure the following variables:
+
+```env
+MONGODB_URI=
+
+DATABASE_NAME=nexgear
+
+BETTER_AUTH_SECRET=
+
+BETTER_AUTH_URL=
+
+GOOGLE_CLIENT_ID=
+
+GOOGLE_CLIENT_SECRET=
+
+ADMIN_EMAIL=
+
+NEXT_PUBLIC_ADMIN_EMAIL=
 ```
 
 ---
 
-## 📚 Learning Objectives
+# 👨‍💻 Admin Credentials
 
-This project helps you learn:
+```text
+Email:
+admin@nexgear.com
 
-- Next.js App Router
-- TypeScript Fundamentals
-- MongoDB CRUD Operations
-- RESTful API Development
-- Authentication with JWT
-- HTTP-only Cookie Sessions
-- Next.js Middleware
-- Protected Routes
-- React Context API
-- Custom Hooks
-- Server and Client Components
-- Folder Organization
-- Clean Architecture
+Password:
+NexGear@2026
+```
 
 ---
 
-## 📈 Future Improvements
+# 👤 Demo User
 
-- Product Search
-- Category Filtering
+```text
+Email:
+user@nexgear.com
+
+Password:
+User@2026
+```
+
+---
+
+# 📄 Pages
+
+### Public Pages
+
+- Home
+- Products
+- Product Details
+- About
+- Contact
+- Help & Support
+- Login
+- Register
+
+### Protected Pages
+
+- Dashboard
+- Add Product
+- Manage Products
+- Edit Product
+- Profile
+- Settings
+
+---
+
+# 📱 Responsive Design
+
+The application is fully optimized for
+
+- 📱 Mobile
+- 📱 Tablet
+- 💻 Laptop
+- 🖥 Desktop
+
+---
+
+# 🔮 Future Improvements
+
 - Shopping Cart
-- Wishlist
-- Checkout Flow
-- Order Management
-- User Dashboard
-- Admin Dashboard
-- Image Upload
-- Pagination
-- Product Reviews
+- Checkout System
 - Payment Gateway Integration
-- Email Verification
-- Password Reset
+- Wishlist
+- Product Reviews
+- Order Management
+- User Profile Editing
+- Email Notifications
 
 ---
 
-## 🤝 Contributing
+# 👨‍💻 Author
 
-Contributions are welcome.
+**Shishir Karmokar**
 
-1. Fork the repository.
-2. Create a feature branch.
-3. Commit your changes.
-4. Push your branch.
-5. Open a Pull Request.
+Computer Science & Engineering Student
+
+Daffodil International University
+
+📧 Email: shuvroshishir.dev@gmail.com
+
+💼 LinkedIn: https://www.linkedin.com/in/shishirkarmokar/
+
+🐙 GitHub: https://github.com/shuvroshishir
+
+🌐 Portfolio: https://shishir-karmokar-portfolio.vercel.app/
 
 ---
 
-## 📄 License
+# ⭐ Support
 
-This project is intended for educational purposes and is open for learning, modification, and experimentation.
+If you like this project, consider giving it a ⭐ on GitHub.
+
+---
+
+# 📜 License
+
+This project is developed for educational and portfolio purposes.

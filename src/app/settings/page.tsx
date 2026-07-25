@@ -31,6 +31,7 @@ export default function SettingsPage() {
     if (!isPending && !session) {
       router.push("/login");
     } else if (session?.user) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setName(session.user.name || "");
       setImageUrl(session.user.image || "");
     }
@@ -80,7 +81,7 @@ export default function SettingsPage() {
       router.push("/login");
       router.refresh();
       toast.success("Logged out successfully");
-    } catch (error) {
+    } catch {
       toast.error("Failed to logout");
     }
   };

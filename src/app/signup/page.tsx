@@ -9,9 +9,11 @@ export default function SignupPage() {
       {/* Left Column: Picture */}
       <div className="relative hidden lg:block overflow-hidden bg-black">
         <div className="absolute inset-0 z-10 bg-gradient-to-r from-background/10 to-background/90" />
-        <img
+        <Image
           src="https://images.unsplash.com/photo-1636115305669-9096bffe87fd?q=80&w=1172&auto=format&fit=crop"
           alt="Premium Circuit"
+          fill
+          priority
           className="absolute inset-0 h-full w-full object-cover opacity-60 transition-transform duration-1000 hover:scale-105"
         />
         <div className="absolute bottom-20 left-12 z-20 max-w-md">

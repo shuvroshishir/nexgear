@@ -18,11 +18,6 @@ export function LoginForm() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const handleDemoLogin = () => {
-    setEmail(process.env.NEXT_PUBLIC_ADMIN_EMAIL || "admin@nexgear.com");
-    setPassword("NexGear@2026");
-  };
-
   const handleGoogleSignIn = async () => {
     try {
       await authClient.signIn.social({ 
@@ -31,9 +26,10 @@ export function LoginForm() {
       });
       // Note: Google redirects, so success toast might not show long, but good practice
       toast.success("Redirecting to Google...");
-    } catch (err: any) {
-      toast.error(err.message || "Google sign in failed");
-      setError(err.message || "An unexpected error occurred during Google sign in");
+    } catch (err) {
+      const message = err instanceof Error ? err.message : "Google sign in failed";
+      toast.error(message);
+      setError(message);
     }
   };
 
@@ -56,9 +52,10 @@ export function LoginForm() {
         router.push("/");
         router.refresh();
       }
-    } catch (error: any) {
-      toast.error(error.message || "An unexpected error occurred");
-      setError(error.message || "An unexpected error occurred");
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "An unexpected error occurred";
+      toast.error(message);
+      setError(message);
     } finally {
       setLoading(false);
     }
@@ -167,7 +164,7 @@ export function LoginForm() {
       </div>
 
       <div className="text-center text-sm text-muted-foreground mt-2">
-        Don't have an account?{" "}
+        Don&apos;t have an account?{" "}
         <Link href="/signup" className="text-primary hover:text-emerald-500 font-semibold transition-colors">
           Sign up now
         </Link>

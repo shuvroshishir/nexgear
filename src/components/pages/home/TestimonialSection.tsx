@@ -57,7 +57,7 @@ export const TestimonialSection = () => {
           Trusted by <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-emerald-400">Thousands</span>
         </h2>
         <p className="text-muted-foreground max-w-2xl mx-auto">
-          Don't just take our word for it. Here is what our community of tech lovers has to say about NexGear.
+          Don&apos;t just take our word for it. Here is what our community of tech lovers has to say about NexGear.
         </p>
       </div>
 
@@ -83,7 +83,7 @@ export const TestimonialSection = () => {
                   </div>
                   
                   <p className="text-muted-foreground mb-6 flex-1 italic text-sm leading-relaxed">
-                    "{testimonial.content}"
+                    &quot;{testimonial.content}&quot;
                   </p>
                   
                   <div className="flex items-center gap-4 mt-auto">

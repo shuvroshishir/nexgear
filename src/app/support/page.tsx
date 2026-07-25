@@ -224,7 +224,7 @@ export default function SupportPage() {
               </div>
               <h2 className="text-3xl md:text-4xl font-bold text-foreground">Still Need Help?</h2>
               <p className="text-lg text-muted-foreground max-w-xl mx-auto">
-                Can't find the answer you're looking for? Our dedicated support team is ready to assist you.
+                Can&apos;t find the answer you&apos;re looking for? Our dedicated support team is ready to assist you.
               </p>
               <div className="pt-4">
                 <Link href="/contact">
