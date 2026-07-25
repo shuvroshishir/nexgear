@@ -20,8 +20,8 @@ A modern full-stack e-commerce platform built with <strong>Next.js 16</strong>, 
 
 # 🚀 Live Demo
 
-- 🌐 **Live Website:** https://your-live-link.vercel.app
-- 💻 **Client Repository:** https://github.com/yourusername/nexgear
+- 🌐 **Live Website:** https://nexgear-gamma.vercel.app
+- 💻 **Client Repository:** https://github.com/shuvroshishir/nexgear
 
 ---
 
