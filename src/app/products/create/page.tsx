@@ -13,6 +13,7 @@ import { isAdmin } from "@/lib/admin";
 import { authClient } from "@/lib/auth-client";
 import { PackagePlus, ArrowLeft } from "lucide-react";
 import Link from "next/link";
+import { toast } from "react-hot-toast";
 
 export default function AddProductPage() {
   const router = useRouter();
@@ -85,12 +86,14 @@ export default function AddProductPage() {
       const data = await res.json();
 
       if (res.ok) {
+        toast.success("Product Created Successfully");
         router.push("/products/manage");
       } else {
+        toast.error(data.error || "Failed to create product");
         setError(data.error || "Failed to create product");
       }
     } catch (err) {
-      console.error(err);
+      toast.error("An unexpected error occurred");
       setError("An unexpected error occurred");
     } finally {
       setLoading(false);

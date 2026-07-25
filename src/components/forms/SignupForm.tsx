@@ -9,6 +9,7 @@ import { Label } from "../ui/label";
 import { motion } from "framer-motion";
 import { ArrowRight, Mail, Lock, User, Image as ImageIcon } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
+import { toast } from "react-hot-toast";
 
 export function SignupForm() {
   const router = useRouter();
@@ -25,7 +26,9 @@ export function SignupForm() {
         provider: "google",
         callbackURL: "/",
       });
+      toast.success("Redirecting to Google...");
     } catch (err: any) {
+      toast.error(err.message || "Google sign in failed");
       setError(err.message || "An unexpected error occurred during Google sign in");
     }
   };
@@ -44,13 +47,15 @@ export function SignupForm() {
       });
 
       if (resultError) {
+        toast.error(resultError.message || "Signup failed");
         throw new Error(resultError.message || "Signup failed");
       }
       
+      toast.success("Registration successful!");
       router.push("/");
       router.refresh();
     } catch (error: any) {
-      console.error(error);
+      toast.error(error.message || "An unexpected error occurred");
       setError(error.message || "An unexpected error occurred");
     } finally {
       setLoading(false);

@@ -9,6 +9,7 @@ import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { ArrowRight, Mail, Lock } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
+import { toast } from "react-hot-toast";
 
 export function LoginForm() {
   const router = useRouter();
@@ -28,7 +29,10 @@ export function LoginForm() {
         provider: "google",
         callbackURL: "/",
       });
+      // Note: Google redirects, so success toast might not show long, but good practice
+      toast.success("Redirecting to Google...");
     } catch (err: any) {
+      toast.error(err.message || "Google sign in failed");
       setError(err.message || "An unexpected error occurred during Google sign in");
     }
   };
@@ -45,13 +49,15 @@ export function LoginForm() {
       });
 
       if (resultError) {
+        toast.error(resultError.message || "Login failed");
         setError(resultError.message || "Login failed");
       } else {
+        toast.success("Successfully logged in!");
         router.push("/");
         router.refresh();
       }
     } catch (error: any) {
-      console.error(error);
+      toast.error(error.message || "An unexpected error occurred");
       setError(error.message || "An unexpected error occurred");
     } finally {
       setLoading(false);

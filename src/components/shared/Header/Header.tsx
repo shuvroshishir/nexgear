@@ -16,6 +16,7 @@ import { useState } from "react";
 import { ModeToggle } from "@/components/mode-toggle";
 import Image from "next/image";
 import { isAdmin } from "@/lib/admin";
+import { toast } from "react-hot-toast";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
@@ -52,6 +53,7 @@ export default function Header() {
   const handleLogoutClick = async () => {
     setMobileOpen(false);
     await authClient.signOut();
+    toast.success("Successfully logged out!");
     router.push("/");
     router.refresh();
   };
@@ -108,7 +110,7 @@ export default function Header() {
                 
                 {isAdminUser ? (
                   <>
-                    <DropdownMenuItem onClick={() => handleNavigation("/products/manage")} className="cursor-pointer">
+                    <DropdownMenuItem onClick={() => handleNavigation("/dashboard")} className="cursor-pointer">
                       Dashboard
                     </DropdownMenuItem>
                     <DropdownMenuItem onClick={() => handleNavigation("/products/create")} className="cursor-pointer">
@@ -197,10 +199,28 @@ export default function Header() {
                         <span className="text-xs text-muted-foreground truncate mt-1">{user?.email}</span>
                       </div>
                     </div>
+                    {isAdminUser && (
+                      <div className="flex flex-col gap-2 mt-2">
+                        <Button
+                          onClick={() => handleNavigation("/dashboard")}
+                          variant="ghost"
+                          className="w-full justify-start"
+                        >
+                          Dashboard
+                        </Button>
+                        <Button
+                          onClick={() => handleNavigation("/products/manage")}
+                          variant="ghost"
+                          className="w-full justify-start"
+                        >
+                          Manage Products
+                        </Button>
+                      </div>
+                    )}
                     <Button
                       onClick={handleLogoutClick}
                       variant="outline"
-                      className="w-full"
+                      className="w-full mt-2"
                     >
                       Logout
                     </Button>

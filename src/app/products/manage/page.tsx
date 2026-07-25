@@ -19,6 +19,8 @@ import { AccessDenied } from "@/components/shared/AccessDenied";
 import { isAdmin } from "@/lib/admin";
 import { authClient } from "@/lib/auth-client";
 import { useRouter } from "next/navigation";
+import { toast } from "react-hot-toast";
+import { ConfirmModal } from "@/components/shared/ConfirmModal";
 
 export default function ManageProductsPage() {
   const router = useRouter();
@@ -51,23 +53,38 @@ export default function ManageProductsPage() {
     fetchProducts();
   }, []);
 
-  const handleDelete = async (id: string) => {
-    if (!confirm("Are you sure you want to delete this product?")) return;
+  const [modalState, setModalState] = useState<{ isOpen: boolean; productId: string | null; isDeleting: boolean }>({
+    isOpen: false,
+    productId: null,
+    isDeleting: false
+  });
+
+  const confirmDelete = async () => {
+    if (!modalState.productId) return;
     
+    setModalState(prev => ({ ...prev, isDeleting: true }));
     try {
-      const res = await fetch(`/api/products/${id}`, {
+      const res = await fetch(`/api/products/${modalState.productId}`, {
         method: "DELETE",
       });
       
+      const data = await res.json().catch(() => ({}));
+
       if (res.ok) {
-        setProducts(products.filter(p => p.id !== id));
+        toast.success("Product Deleted Successfully");
+        setProducts(products.filter(p => p.id !== modalState.productId));
       } else {
-        alert("Failed to delete product");
+        toast.error(data.error || "Failed to delete product");
       }
     } catch (error) {
-      console.error(error);
-      alert("An error occurred");
+      toast.error("An error occurred while deleting");
+    } finally {
+      setModalState({ isOpen: false, productId: null, isDeleting: false });
     }
+  };
+
+  const handleDeleteClick = (id: string) => {
+    setModalState({ isOpen: true, productId: id, isDeleting: false });
   };
 
   if (isPending) {
@@ -156,7 +173,7 @@ export default function ManageProductsPage() {
                           variant="destructive" 
                           size="icon" 
                           title="Delete product"
-                          onClick={() => handleDelete(product.id!)}
+                          onClick={() => handleDeleteClick(product.id!)}
                         >
                           <Trash2 className="h-4 w-4" />
                         </Button>
@@ -169,6 +186,16 @@ export default function ManageProductsPage() {
           )}
         </CardContent>
       </Card>
+
+      <ConfirmModal 
+        isOpen={modalState.isOpen}
+        onClose={() => !modalState.isDeleting && setModalState(prev => ({ ...prev, isOpen: false }))}
+        onConfirm={confirmDelete}
+        title="Delete Product"
+        description="Are you sure you want to delete this product? This action cannot be undone."
+        confirmText="Delete"
+        isLoading={modalState.isDeleting}
+      />
     </div>
   );
 }
